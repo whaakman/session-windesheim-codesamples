@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shipment-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shipment
+  template:
+    metadata:
+      labels:
+        app: shipment
+    spec:
+      containers:
+      - name: shipment-container
+        image: RegistryName.azurecr.io/shipment-service:1.0.2
+        ports:
+        - containerPort: 5000
+        env:
+        - name: NAMESPACE_CONNECTION_STR
+          valueFrom:
+            secretKeyRef:
+              name: secrets
+              key: SERVICEBUS_QUEUE_CONNECTIONSTRING
+        - name: QUEUE_NAME
+          value: "orders"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shipment-service
+spec:
+  selector:
+    app: shipment
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
+  type: LoadBalancer

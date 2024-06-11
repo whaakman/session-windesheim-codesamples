@@ -1,0 +1,45 @@
+<!-- templates/index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order shipment service</title>
+    <style>
+        body {
+            background-color: #2f7770;
+            color: white;
+            font-weight: bold;
+            font-family: Arial, sans-serif; /* Optional: specify a preferred font */
+        }
+
+        center {
+            text-align: center;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        /* Optional: add more styles as needed */
+    </style>
+</head>
+<body>
+    <center>
+    <h1>Order shipment service</h1>
+    <img src="{{ url_for('static', filename='order.jpg') }}" alt="order" width="600" height="600">
+    
+    {% if count %}
+        <p>{{ count }} orders submitted for shipment!</p>
+    {% endif %}
+    
+    <form action="/send_message" method="post">
+        <br>
+        <label for="number" style="color: white;">Number of orders to be shipped:</label>
+        <input type="number" name="number" required>
+        <button type="submit">Submit shipment</button>
+    </form>
+    </center>
+</body>
+</html>

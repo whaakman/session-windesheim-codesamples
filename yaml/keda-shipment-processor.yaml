@@ -1,0 +1,42 @@
+apiVersion: keda.sh/v1alpha1
+kind: TriggerAuthentication
+metadata:
+  name: sb-connection
+spec:
+  podIdentity:
+    provider: none
+  secretTargetRef:
+  - parameter: connection
+    name: secrets
+    key: SERVICEBUS_QUEUE_CONNECTIONSTRING
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledJob
+metadata:
+  name: shipment
+  namespace: default
+spec:
+  jobTargetRef:
+    parallelism: 20
+    completions: 1
+    ttlSecondsAfterFinished: 120
+    template:
+      spec:
+        containers:
+        - name: shipment-processor-container
+          image: RegistryName.azurecr.io/shipment-processor:1.0.0
+          env:
+          - name: NAMESPACE_CONNECTION_STR
+            valueFrom:
+              secretKeyRef:
+                name: secrets
+                key: SERVICEBUS_QUEUE_CONNECTIONSTRING
+          - name: QUEUE_NAME
+            value: "orders" 
+  triggers:
+  - type: azure-servicebus
+    metadata:
+      queueName: orders
+      messageCount: "20"
+    authenticationRef:
+      name: sb-connection
