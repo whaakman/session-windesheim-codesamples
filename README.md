@@ -1,4 +1,4 @@
-# Deploying Santa's delivery service sample app
+# Delivery service sample app
 This sample application contains application code for a frontend website that allows for a submission of "messages" to Azure Service Bus. The code is written in Python and leverages Flask for the frontend. A backend is created to read messages from the Azure Service Bus queue for processing. KEDA is leveraged to scale based on the Azure Service Bus queue to launch jobs for processing. 
 
 
